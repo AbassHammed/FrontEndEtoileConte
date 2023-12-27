@@ -75,7 +75,7 @@ class CustomUser {
       String lastName,
       String password,
       String confirmPassword) async {
-    final Uri apiEndpoint = Uri.parse('https://127.0.0.1:8000/user/');
+    final Uri apiEndpoint = Uri.parse('http://10.0.2.2:8000/user/');
 
     try {
       if (password != confirmPassword) {
@@ -124,7 +124,7 @@ class CustomUser {
 
   static Future<void> loginUser(
       BuildContext context, String email, String password) async {
-    final Uri apiEndpoint = Uri.parse('https://127.0.0.1:8000/login/');
+    final Uri apiEndpoint = Uri.parse('http://10.0.2.2:8000/login/');
 
     try {
       final response = await http.post(

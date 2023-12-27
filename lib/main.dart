@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:testing/themes/theme.dart';
-import './screens/dash_board.dart';
+// import './screens/dash_board.dart';
 // import './screens/LoginPage.dart';
 // import './screens/MainPage.dart';
 // import './screens/SignUpPage.dart';
-// import './screens/login_page.dart';
+import './screens/login_page.dart';
 
 void main() {
   runApp(const EtoileConteApp());
@@ -34,9 +34,9 @@ class MainScreen extends StatelessWidget {
     return Navigator(
       pages: const [
         // MaterialPage(child: SignUpPage()),
-        MaterialPage(child: DashBoard()),
+        // MaterialPage(child: DashBoard()),
         // MaterialPage(child: EtoileConteApp()),
-        // MaterialPage(child: LoginPage()),
+        MaterialPage(child: LoginPage()),
         // MaterialPage(child: SignUpPage()),
         // MaterialPage(child: EtoileConteScreen())
       ],

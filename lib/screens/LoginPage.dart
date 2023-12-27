@@ -13,10 +13,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isError = false;
+  String? _emailError;
+  String? _passwordError;
 
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       backgroundColor: const Color(0xFF9288F8),
       body: Stack(alignment: Alignment.center, children: [
@@ -55,9 +57,10 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: "Adresse mail",
                       labelStyle: const TextStyle(color: Color(0xFFA9A9A9)),
-                      errorText: _isError ? 'Invalid email' : null,
+                      errorText: _emailError,
                     ),
                     keyboardType: TextInputType.emailAddress,
+                    onChanged: (_) => setState(() => _emailError = null),
                   ),
                   const SizedBox(height: 8.0),
                   TextField(
@@ -66,9 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: "Mot de passe",
                       labelStyle: const TextStyle(color: Color(0xFFA9A9A9)),
-                      errorText: _isError ? 'Invalid password' : null,
+                      errorText: _passwordError,
                     ),
                     obscureText: true,
+                    onChanged: (_) => setState(() => _passwordError = null),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
@@ -124,10 +128,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        const Align(
-          alignment: Alignment.bottomCenter,
-          child: FooterLinks(),
-        ),
+        if (!isKeyboardOpen)
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: FooterLinks(),
+          ),
       ]),
     );
   }
@@ -140,19 +145,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _attemptLogin(BuildContext context) async {
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+    });
+
     final email = _emailController.text;
     final password = _passwordController.text;
+
+    if (email.isEmpty) {
+      setState(() => _emailError = 'Email can\'t be empty');
+    }
+
+    if (password.isEmpty) {
+      setState(() => _passwordError = 'Password can\'t be empty');
+    }
 
     if (email.isNotEmpty && password.isNotEmpty) {
       try {
         await CustomUser.loginUser(context, email, password);
       } catch (e) {
+        print(e);
         setState(() {
-          _isError = true;
+          _emailError = 'Error logging in. Check your credentials';
+          _passwordError = 'Error logging in. Check your credentials';
         });
       }
-    } else {
-      setState(() => _isError = true);
     }
   }
 
@@ -160,22 +178,6 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SignUpPage()),
-    );
-  }
-}
-
-class Box extends StatelessWidget {
-  final Widget child;
-  final Alignment alignment;
-
-  const Box(
-      {super.key, required this.child, this.alignment = Alignment.center});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: alignment,
-      child: child,
     );
   }
 }
