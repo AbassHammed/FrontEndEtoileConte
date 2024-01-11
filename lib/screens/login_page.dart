@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       backgroundColor: const Color(0xFF9288F8),
       body: Stack(alignment: Alignment.center, children: [
@@ -127,10 +128,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        const Align(
-          alignment: Alignment.bottomCenter,
-          child: FooterLinks(),
-        ),
+        if (!isKeyboardOpen)
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: FooterLinks(),
+          ),
       ]),
     );
   }
@@ -163,6 +165,7 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await CustomUser.loginUser(context, email, password);
       } catch (e) {
+        print(e);
         setState(() {
           _emailError = 'Error logging in. Check your credentials';
           _passwordError = 'Error logging in. Check your credentials';
